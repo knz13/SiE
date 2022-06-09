@@ -9,7 +9,7 @@ int main() {
 	prop.openGLVersionMinor = 2;
 	prop.width = 1280;
 	prop.height = 720;
-	prop.multisamplingCount = 4;
+	prop.multisamplingCount = 10;
 
 	Window window(prop);
 
@@ -17,8 +17,7 @@ int main() {
     MeshAttribute::Vertex vertices;
 
     vertices.positions = {
-        // front
-        -0.5, -0.5,  0.5,
+           -0.5, -0.5,  0.5,
         0.5, -0.5,  0.5,
         0.5,  0.5,  0.5,
         -0.5,  0.5,  0.5,
@@ -58,13 +57,19 @@ int main() {
     mesh.SetVertices(vertices);
     mesh.SetShader("base_shader");
 
+    
     mesh.PreDrawn().Connect([&](Mesh& mesh, Shader& shader, auto matrix) {
-        mesh.GetMasterObject().GetAsObject().Transform().Rotate(1 * window.GetDeltaTime(),0,0);
+        mesh.GetMasterObject().GetAsObject().Transform().Rotate(0,15 * window.GetDeltaTime(),0);
     });
+    
 
-    obj.Transform().SetPosition(0,0,-10);
+    obj.Transform().SetPosition(0,0,0);
 
 	while (window.IsOpen()) {
+
+
+
+
 		window.DrawFrame();
 	}
 

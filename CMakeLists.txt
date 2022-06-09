@@ -165,6 +165,22 @@ add_subdirectory(tests)
 	list(APPEND ${PROJECT_NAME}_DEPENDENCIES stb_project)
 
 
+#repository download and settings for alias async...
+
+
+	FetchContent_Declare(async_project
+
+		GIT_REPOSITORY https://github.com/Amanieu/asyncplusplus
+
+		GIT_TAG v1.1
+
+		SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/async
+
+	)
+
+	list(APPEND ${PROJECT_NAME}_DEPENDENCIES async_project)
+
+
 	FetchContent_MakeAvailable(${${PROJECT_NAME}_DEPENDENCIES})
 
 	foreach(X IN LISTS ${PROJECT_NAME}_DEPENDENCIES)

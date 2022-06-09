@@ -90,7 +90,7 @@ Window::Window(WindowCreationProperties prop) : m_Properties(prop) {
 
     GameObject mainCamera = GameObject::CreateNew("Main Camera");
     mainCamera.AddComponent<Camera>();
-    mainCamera.Transform().SetPosition(0, 5, 2);
+    mainCamera.Transform().SetPosition(0, 2, 10);
 
     mainCamera.GetComponent<Camera>().SetLookAt(0, 0, 0);
 
@@ -121,7 +121,8 @@ Window::Window(WindowCreationProperties prop) : m_Properties(prop) {
     //GL_CALL(glEnable(GL_CULL_FACE));
     GL_CALL(glEnable(GL_BLEND));
     GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
+    GL_CALL(glStencilFunc(GL_ALWAYS, 1, 0xFF));
+    GL_CALL(glStencilMask(0x00));
     
 
     
@@ -155,7 +156,6 @@ SDL_GLContext& Window::GetContext() {
 void Window::EndDrawState() {
     m_PostDrawingLoopFuncs.EmitEvent(*this);
     
-
     SDL_GL_SwapWindow(m_WindowPointer);
 
 
@@ -221,8 +221,10 @@ void Window::BeginDrawState() {
     glm::vec3 color = m_ClearColor.Normalized();
     GL_CALL(glClearColor(color.x,color.y,color.z,1.0f));
     GL_CALL(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
-    GL_CALL(glStencilMask(0xFF));
+    GL_CALL(glStencilMask(0x00));
     GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+
 }
 
 
@@ -280,14 +282,11 @@ void Window::DrawFrame() {
     oldTime = currentTime;
 
     GameObject::ForEach([&](GameObject obj) {
-
-        
         for (auto& name : obj.GetComponentsNames()) {
             if (auto comp = obj.GetComponentByName(name); comp) {
                 //comp.GetAs<GameComponent>()->Update(m_DeltaTime);
             }
         }
-
     });
 
     Camera::ForEach([](Camera& camera) {
@@ -302,7 +301,7 @@ void Window::DrawFrame() {
         }
 
         camera.Render();
-        });
+    });
 
     EndDrawState();
 
@@ -467,8 +466,6 @@ void Window::DisableCamera() {
 }
 
 void Window::PostDrawOperations() {
-    
-
     
 
     if(!m_IsOpen){

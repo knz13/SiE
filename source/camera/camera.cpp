@@ -56,12 +56,7 @@ void Camera::Init()
             currentObjectShader.Bind();
             currentObjectShader.SetUniformMat4f("MVP", mvp);
 
-            
-
             drawable.Draw(mvp);
-
-            
-
         }
 
     });
@@ -157,8 +152,8 @@ void Camera::Render()
         if (HasRenderTarget()) {
             m_RenderTarget.get()->Clear();
             m_RenderTarget.get()->Bind();
-            GL_CALL(glViewport(m_ViewPort.x, m_ViewPort.y, m_ViewPort.z, m_ViewPort.w));
         }
+        GL_CALL(glViewport(m_ViewPort.x, m_ViewPort.y, m_ViewPort.z, m_ViewPort.w));
         m_DrawingFunc(*this);
         if (HasRenderTarget()) {
             m_RenderTarget.get()->Unbind();
