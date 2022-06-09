@@ -10,76 +10,81 @@ Window::Window(WindowCreationProperties prop) : m_Properties(prop) {
 
     Window::m_MainWindow = this;
     
-    SDL_Init(SDL_INIT_VIDEO);
+    if (!m_WindowGeneratorFunc) {
+        SDL_Init(SDL_INIT_VIDEO);
 
-    int contextFlags = 0;
-    int windowFlags = SDL_WINDOW_OPENGL;
+        int contextFlags = 0;
+        int windowFlags = SDL_WINDOW_OPENGL;
 
-    if(prop.windowFlags != WindowFlag::None){
-        if(prop.windowFlags & WindowFlag::OpenGLDebugContext){
-            contextFlags |= SDL_GL_CONTEXT_DEBUG_FLAG;
-        }
-        if(prop.windowFlags & WindowFlag::InitiallyMinimized){
-            windowFlags |= SDL_WINDOW_MINIMIZED;
-        }
-        else {
-            windowFlags |= SDL_WINDOW_MAXIMIZED;
-        }
-        
-        if(!(prop.windowFlags & WindowFlag::NotResizeable)){
-            windowFlags |= SDL_WINDOW_RESIZABLE;
-        }
-        
-        
-        
-        if((prop.openGLVersionMajor == 3 && prop.openGLVersionMinor > 2) || prop.openGLVersionMajor > 3){
-            if(prop.windowFlags & WindowFlag::CoreProfile){
-                contextFlags |= SDL_GL_CONTEXT_PROFILE_CORE;
+        if (prop.windowFlags != WindowFlag::None) {
+            if (prop.windowFlags & WindowFlag::OpenGLDebugContext) {
+                contextFlags |= SDL_GL_CONTEXT_DEBUG_FLAG;
+            }
+            if (prop.windowFlags & WindowFlag::InitiallyMinimized) {
+                windowFlags |= SDL_WINDOW_MINIMIZED;
             }
             else {
-                contextFlags |= SDL_GL_CONTEXT_PROFILE_COMPATIBILITY;
+                windowFlags |= SDL_WINDOW_MAXIMIZED;
+            }
+
+            if (!(prop.windowFlags & WindowFlag::NotResizeable)) {
+                windowFlags |= SDL_WINDOW_RESIZABLE;
+            }
+
+
+
+            if ((prop.openGLVersionMajor == 3 && prop.openGLVersionMinor > 2) || prop.openGLVersionMajor > 3) {
+                if (prop.windowFlags & WindowFlag::CoreProfile) {
+                    contextFlags |= SDL_GL_CONTEXT_PROFILE_CORE;
+                }
+                else {
+                    contextFlags |= SDL_GL_CONTEXT_PROFILE_COMPATIBILITY;
+                }
             }
         }
+
+
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, prop.openGLVersionMajor);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, prop.openGLVersionMinor);
+        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, prop.multisamplingCount);
+
+        SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+        SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+        SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+        SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
+
+        if (prop.windowFlags & WindowFlag::FullScreen) {
+            windowFlags |= SDL_WINDOW_FULLSCREEN;
+        }
+
+        this->m_WindowPointer = SDL_CreateWindow(prop.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+            prop.width, prop.height, windowFlags);
+
+        if (!this->m_WindowPointer) {
+            DEBUG_ERROR(("Could not create window:" + std::string(SDL_GetError())).c_str());
+            return;
+        }
+
+
+        this->m_Context = SDL_GL_CreateContext(m_WindowPointer);
+
+        if (!m_Context) {
+            DEBUG_ERROR(("Could not create context:" + std::string(SDL_GetError())).c_str());
+            return;
+        }
+        SDL_GL_MakeCurrent(m_WindowPointer, m_Context);
+
+        SDL_GL_SetSwapInterval(1);
+
+        glewExperimental = true;
+        if (glewInit() != GLEW_OK) {
+            DEBUG_ERROR("Glew wasn't initiated!");
+            return;
+        }
     }
-
-    
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, prop.openGLVersionMajor);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, prop.openGLVersionMinor);
-    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, prop.multisamplingCount);
-
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-
-
-    if(prop.windowFlags & WindowFlag::FullScreen){
-        windowFlags |= SDL_WINDOW_FULLSCREEN;
-    }
-   
-    this->m_WindowPointer = SDL_CreateWindow(prop.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        prop.width,prop.height, windowFlags);
-
-    if (!this->m_WindowPointer) {
-        DEBUG_ERROR(("Could not create window:" + std::string(SDL_GetError())).c_str());
-        return;
-    }
-
-
-    this->m_Context = SDL_GL_CreateContext(m_WindowPointer);
-
-    if (!m_Context) {
-        DEBUG_ERROR(("Could not create context:" + std::string(SDL_GetError())).c_str());
-        return;
-    }
-    SDL_GL_MakeCurrent(m_WindowPointer, m_Context);
-    
-    SDL_GL_SetSwapInterval(1);
-
-    glewExperimental = true;
-    if(glewInit() != GLEW_OK){
-        DEBUG_ERROR("Glew wasn't initiated!");
-        return;
-    }
-
 
     
 
@@ -100,22 +105,25 @@ Window::Window(WindowCreationProperties prop) : m_Properties(prop) {
 
         });
 
+    this->Events().ResizedEvent().Connect([](Window& win,WindowResizedEventProperties prop){
+        win.m_Properties.width = prop.width;
+        win.m_Properties.height = prop.height;
+        
+        if (win.GetCurrentCamera()) {
+            win.GetCurrentCamera().GetAsObject().GetComponent<Camera>().SetRenderTarget(std::make_shared<Framebuffer>(prop.width,prop.height));
+        }
+
+    });
     
-    GL_CALL(glEnable(GL_PROGRAM_POINT_SIZE));
+    //GL_CALL(glEnable(GL_PROGRAM_POINT_SIZE));
     GL_CALL(glEnable(GL_STENCIL_TEST));
     GL_CALL(glEnable(GL_DEPTH_TEST));
-    GL_CALL(glEnable(GL_CULL_FACE));
+    //GL_CALL(glEnable(GL_CULL_FACE));
     GL_CALL(glEnable(GL_BLEND));
     GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
     
 
-    this->Events().ResizedEvent().Connect([](Window& win,WindowResizedEventProperties prop){
-        win.m_Properties.width = prop.width;
-        win.m_Properties.height = prop.height;
-        
-
-    });
     
 
 
@@ -133,10 +141,6 @@ Window::~Window() {
     m_CreatedShaders.clear();
     m_CreatedVertexArrays.clear();
 
-    
-
-    
-
     SDL_DestroyWindow(m_WindowPointer);
 }
 
@@ -151,21 +155,22 @@ SDL_GLContext& Window::GetContext() {
 void Window::EndDrawState() {
     m_PostDrawingLoopFuncs.EmitEvent(*this);
     
-    
+
     SDL_GL_SwapWindow(m_WindowPointer);
+
 
 }
 
 void Window::BeginDrawState() {
     m_PreDrawingLoopFuncs.EmitEvent(*this);
 
-    SDL_Event event;
+    SDL_Event ev;
 
-    while (SDL_PollEvent(&event)) {
-        m_EventCallback.EmitEvent(*this, event);
-        switch (event.type) {
+    while (SDL_PollEvent(&ev)) {
+        m_EventCallback.EmitEvent(*this, ev);
+        switch (ev.type) {
         case SDL_WINDOWEVENT:
-            switch (event.window.event) {
+            switch (ev.window.event) {
             case SDL_WINDOWEVENT_CLOSE:
                 m_ClosingCallbackFuncs.EmitEvent(*this);
                 m_IsOpen = false;
@@ -189,22 +194,22 @@ void Window::BeginDrawState() {
             }
             break;
         case SDL_KEYDOWN:
-            m_KeyEventFuncs.EmitEvent(*this, event.key);
+            m_KeyEventFuncs.EmitEvent(*this,SDL_KeyboardEvent(ev.key));
             break;
         case SDL_KEYUP:
-            m_KeyEventFuncs.EmitEvent(*this, event.key);
+            m_KeyEventFuncs.EmitEvent(*this, SDL_KeyboardEvent(ev.key));
             break;
         case SDL_MOUSEBUTTONDOWN:
-            m_MouseButtonFuncs.EmitEvent(*this, event.button);
+            m_MouseButtonFuncs.EmitEvent(*this, SDL_MouseButtonEvent(ev.button));
             break;
         case SDL_MOUSEBUTTONUP:
-            m_MouseButtonFuncs.EmitEvent(*this, event.button);
+            m_MouseButtonFuncs.EmitEvent(*this, SDL_MouseButtonEvent(ev.button));
             break;
         case SDL_MOUSEMOTION:
-            m_MouseMovedFuncs.EmitEvent(*this, event.motion);
+            m_MouseMovedFuncs.EmitEvent(*this, SDL_MouseMotionEvent(ev.motion));
             break;
         case SDL_MOUSEWHEEL:
-            m_MouseScrollFuncs.EmitEvent(*this, event.wheel);
+            m_MouseScrollFuncs.EmitEvent(*this, SDL_MouseWheelEvent(ev.wheel));
             break;
         case SDL_DROPFILE:
             break;
@@ -261,50 +266,49 @@ WindowEvents Window::Events() {
     return WindowEvents(*this);
 }
 
-void Window::DrawingLoop() {
+void Window::DrawFrame() {
     static float currentTime=0,oldTime=0;
 
-    while(IsOpen()){
+    SDL_GL_MakeCurrent(m_WindowPointer,m_Context);
 
-        SDL_GL_MakeCurrent(m_WindowPointer,m_Context);
+      
+    BeginDrawState();
+        
+    currentTime = SDL_GetTicks();
+    m_DeltaTime = static_cast<float>(currentTime - oldTime)/1000;
+
+    oldTime = currentTime;
+
+    GameObject::ForEach([&](GameObject obj) {
 
         
-        
-        BeginDrawState();
-        
-        currentTime = SDL_GetTicks();
-        m_DeltaTime = static_cast<float>(currentTime - oldTime)/1000;
-
-        oldTime = currentTime;
-
-        GameObject::ForEach([&](GameObject obj) {
-            for (auto& name : obj.GetComponentsNames()) {
-                if (auto comp = obj.GetComponentByName(name); comp) {
-                    comp.GetAs<GameComponent>().Update(m_DeltaTime);
-                }
+        for (auto& name : obj.GetComponentsNames()) {
+            if (auto comp = obj.GetComponentByName(name); comp) {
+                //comp.GetAs<GameComponent>()->Update(m_DeltaTime);
             }
+        }
+
+    });
+
+    Camera::ForEach([](Camera& camera) {
+        if (!camera.GetMasterObject().GetAsObject().IsActive()) {
+            return;
+        }
+        if (!camera.IsEnabled()) {
+            return;
+        }
+        if (!camera.HasRenderTarget() && camera.GetMasterObject() != Window::GetCurrentWindow().GetCurrentCamera()) {
+            return;
+        }
+
+        camera.Render();
         });
 
-        Camera::ForEach([](Camera& camera) {
-            if (!camera.GetMasterObject().GetAsObject().IsActive()) {
-                return;
-            }
-            if (!camera.IsEnabled()) {
-                return;
-            }
-            if (!camera.HasRenderTarget()) {
-                return;
-            }
+    EndDrawState();
 
-            camera.Render();
-            });
-
-        EndDrawState();
-
-        PostDrawOperations();
+    PostDrawOperations();
         
-    }
-
+    
     
 
 
@@ -344,11 +348,11 @@ Shader& WindowCreators::CachedShader(std::string shaderRelativePath, bool* loadR
     for(auto file : std::filesystem::directory_iterator(shaderRelativePath)){
         std::string fileName = file.path().filename().string();
 
-        if(fileName.ends_with("vert")){
+        if(file.path().extension().string() == ".vert"){
             std::string source = LoadFileContents(std::filesystem::absolute(shaderRelativePath + "/" + fileName).string());
             sources.push_back(std::make_pair(ShaderType::Vertex,source));
         }
-        if(fileName.ends_with("frag")){
+        if(file.path().extension().string() == ".frag"){
             std::string source = LoadFileContents(std::filesystem::absolute(shaderRelativePath + "/" + fileName).string());
             sources.push_back(std::make_pair(ShaderType::Fragment,source));
         }
@@ -475,5 +479,10 @@ void Window::PostDrawOperations() {
 }
 
 void Window::SetSDLCreationFunc(std::function<WindowSDLInitializerProperties()> func) {
-    Window::
+    Window::m_WindowGeneratorFunc = func;
+}
+
+RayCastHit Window::RayCast(glm::vec2 screenPos)
+{
+    return RayCastHit();
 }

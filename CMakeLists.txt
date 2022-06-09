@@ -149,6 +149,22 @@ add_subdirectory(tests)
 	list(APPEND ${PROJECT_NAME}_DEPENDENCIES assimp_project)
 
 
+#repository download and settings for alias stb...
+
+
+	FetchContent_Declare(stb_project
+
+		GIT_REPOSITORY https://github.com/nothings/stb
+
+		GIT_TAG origin/master
+
+		SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/stb
+
+	)
+
+	list(APPEND ${PROJECT_NAME}_DEPENDENCIES stb_project)
+
+
 	FetchContent_MakeAvailable(${${PROJECT_NAME}_DEPENDENCIES})
 
 	foreach(X IN LISTS ${PROJECT_NAME}_DEPENDENCIES)
@@ -232,3 +248,5 @@ target_include_directories(SiE PUBLIC ${PROJECT_SOURCE_DIR}/vendor/ecspp/include
 target_include_directories(SiE PUBLIC ${PROJECT_SOURCE_DIR}/vendor/yael/include)
 
 target_include_directories(SiE PUBLIC ${PROJECT_SOURCE_DIR}/vendor/assimp/include)
+
+target_include_directories(SiE PUBLIC ${PROJECT_SOURCE_DIR}/vendor/stb/)

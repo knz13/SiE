@@ -126,36 +126,6 @@ void TransformComponent::SetScale(glm::vec3 vec) {
     m_Scale = vec;
 }
 
-void TransformComponent::ShowProperties() {
-    
-    ImGui::AlignedText("Position");
-    ImGui::SameLine();
-    ImGui::AlignNextRight();
-    ImGui::DragFloat3(GuiLayer::GetImGuiID(&m_Position).c_str(),(float*)&m_Position,0.1,0,0,"%.2f");
-    
-    
-    glm::vec3 rotationAsAngles = GetRotation();
-
-    ImGui::AlignedText("Rotation");
-    ImGui::SameLine();
-    ImGui::AlignNextRight();
-    ImGui::DragFloat3(GuiLayer::GetImGuiID(&m_Rotation).c_str(),(float*)&rotationAsAngles,0.1,0,0,"%.2f");
-    
-
-    glm::vec3 rotationAsRadians = glm::radians(rotationAsAngles);
-
-    m_Rotation += rotationAsRadians - m_Rotation;
-    
-    
-    ImGui::AlignedText("Scale");
-    ImGui::SameLine();
-    ImGui::AlignNextRight();
-    ImGui::DragFloat3(GuiLayer::GetImGuiID(&m_Scale).c_str(),(float*)&m_Scale,0.01f,0,0,"%.2f");
-    
-
-    
-}
-
 void TransformComponent::Update(float deltaTime) {
 
     
@@ -182,27 +152,6 @@ const glm::vec3& TransformComponent::GetRotationRadians() {
     return m_Rotation;
 }
 
-
-
-YAML::Node TransformComponent::Serialize()
-{
-    YAML::Node node;
-    HelperFunctions::SerializeVariable("position", m_Position, node);
-    HelperFunctions::SerializeVariable("rotation", m_Rotation, node);
-    HelperFunctions::SerializeVariable("scale", m_Scale, node);
-
-    return node;
-}
-
-bool TransformComponent::Deserialize(YAML::Node& node)
-{
-    HelperFunctions::DeserializeVariable("position", m_Position, node);
-    HelperFunctions::DeserializeVariable("rotation", m_Rotation, node);
-    HelperFunctions::DeserializeVariable("scale", m_Scale, node);
-
-    return true;
-
-}
 
 void TransformComponent::Init() {
     MakeAlwaysEnabled(true);

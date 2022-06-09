@@ -50,8 +50,8 @@ void Camera::Init()
                 continue;
             }
 
-            Shader& currentObjectShader = Window::GetCurrentWindow().Create().CachedShader(drawable.m_ShaderName);
-            glm::mat4 mvp = camera.GetViewProjection(Window::GetCurrentWindow()) * transform.GetModelMatrix();
+            Shader& currentObjectShader = drawable.GetShader();
+            glm::mat4 mvp = camera.GetProjection() * camera.GetView() * transform.GetModelMatrix();;
 
             currentObjectShader.Bind();
             currentObjectShader.SetUniformMat4f("MVP", mvp);
@@ -153,12 +153,16 @@ bool Camera::HasRenderTarget()
 
 void Camera::Render()
 {
-    if (HasRenderTarget() && GetMasterObject().operator bool()) {
-        m_RenderTarget.get()->Clear();
-        m_RenderTarget.get()->Bind();
-        GL_CALL(glViewport(m_ViewPort.x,m_ViewPort.y,m_ViewPort.z,m_ViewPort.w));
+    if (GetMasterObject().operator bool()) {
+        if (HasRenderTarget()) {
+            m_RenderTarget.get()->Clear();
+            m_RenderTarget.get()->Bind();
+            GL_CALL(glViewport(m_ViewPort.x, m_ViewPort.y, m_ViewPort.z, m_ViewPort.w));
+        }
         m_DrawingFunc(*this);
-        m_RenderTarget.get()->Unbind();
+        if (HasRenderTarget()) {
+            m_RenderTarget.get()->Unbind();
+        }
     }
     
 }

@@ -21,7 +21,6 @@ struct ShaderUniformContainer {
 
 
 class Shader {
-    KV_CLASS
 public:
 
     Shader();
@@ -38,6 +37,9 @@ public:
     const std::map<std::string,ShaderUniformContainer>& GetUniformLocations();
     void Bind();
     void Unbind();
+    operator bool() const {
+        return m_AlreadyCreatedProgram;
+    }
 
 private:
     

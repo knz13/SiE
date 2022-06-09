@@ -49,44 +49,6 @@ void Mesh::TrySetMesh(std::string path)
 
 
 
-YAML::Node Mesh::Serialize()
-{
-    YAML::Node node;
-
-    HelperFunctions::SerializeVariable("shader name", m_ShaderName, node);
-    
-
-    YAML::Node vertices = node["vertices"];
-
-    HelperFunctions::SerializeVariable("positions", m_Vertices.positions, node);
-    HelperFunctions::SerializeVariable("normals", m_Vertices.normals, node);
-    HelperFunctions::SerializeVariable("tex coords", m_Vertices.texCoords, node);
-    HelperFunctions::SerializeVariable("tangents", m_Vertices.tangents, node);
-    HelperFunctions::SerializeVariable("indices", m_Vertices.indices, node);
-
-    
-
-    return node;
-}
-
-bool Mesh::Deserialize(YAML::Node& node)
-{
-    HelperFunctions::DeserializeVariable("shader name", m_ShaderName, node);
-    
-
-    YAML::Node vertices = node["vertices"];
-
-    HelperFunctions::DeserializeVariable("positions", m_Vertices.positions, node);
-    HelperFunctions::DeserializeVariable("normals", m_Vertices.normals, node);
-    HelperFunctions::DeserializeVariable("tex coords", m_Vertices.texCoords, node);
-    HelperFunctions::DeserializeVariable("tangents", m_Vertices.tangents, node);
-    HelperFunctions::DeserializeVariable("indices", m_Vertices.indices, node);
-
-    SetVertices(m_Vertices);
-
-    return true;
-}
-
 VertexArray& Mesh::GetVertexArray() {
     return *m_VAO;
 }
@@ -166,10 +128,7 @@ void Mesh::Update(float deltaTime) {
     
 }
 
-void Mesh::ShowProperties() {
-   
-    
-}
+
 
 
 

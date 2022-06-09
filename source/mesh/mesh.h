@@ -42,7 +42,6 @@ public:
     ~Mesh();
 
 
-
     bool SetShader(std::string shaderLocation);
     bool SetVertices(MeshAttribute::Vertex vertexAttribute);
     

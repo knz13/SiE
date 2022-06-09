@@ -8,7 +8,6 @@
 #include <unordered_map>
 #include <filesystem>
 #include <map>
-#include <concepts>
 #include "../vendor/glm/glm/glm.hpp"
 #include "../vendor/glm/glm/gtc/quaternion.hpp"
 #include "../vendor/glm/glm/gtx/quaternion.hpp"
@@ -25,7 +24,14 @@
 #include "general/helpers.h"
 #define SDL_MAIN_HANDLED
 #include "../vendor/sdl_repo/include/SDL.h"
-using namespace std;
+#include "assimp/material.h"
+#include "assimp/mesh.h"
+#include "assimp/scene.h"
+#include "assimp/postprocess.h"
+
+#include "assimp/Importer.hpp"
+
+
 
 
 

@@ -13,7 +13,6 @@
 #include "general/color.h"
 #include "../vendor/glew/include/GL/glew.h"
 #include "../vendor/glm/glm/gtc/type_ptr.hpp"
-#include <source_location>
 #include "../vendor/ecspp/include/ecspp.h"
 #include "../vendor/yael/include/yael.h"
 
@@ -52,7 +51,7 @@ static unsigned int TestSize(unsigned int dataType) {
 #define DEBUG_WARN(x)
 #define DEBUG_ERROR(x)
 #else
-#define DEBUG_LOG(x) cout << "LOG: " << x << endl << " In Function " << std::source_location::current().function_name() << endl <<   " At line: "<< __LINE__ << endl << "In file: " << __FILE__ << endl
+#define DEBUG_LOG(x) cout << "LOG: " << x << endl <<   " At line: "<< __LINE__ << endl << "In file: " << __FILE__ << endl
 #define DEBUG_WARN(x) cout << "WARNING: " << x << endl <<  "At line: "<< __LINE__ << endl << "In file: " << __FILE__ << endl
 #define DEBUG_ERROR(x) cout << "ERROR! -> " << x  << endl <<  "At line: "<< __LINE__ << endl << "In file: " << __FILE__ << endl; __debugbreak()
 #endif

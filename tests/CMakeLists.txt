@@ -37,57 +37,24 @@ include(FetchContent)
 #project name
 project("SiE_tests_project")
 
-# --------------------- Repository declarations ------------------------
-
-
-#repository download and settings for alias catch2...
-
-
-	FetchContent_Declare(catch2_project
-
-		GIT_REPOSITORY https://github.com/catchorg/Catch2
-
-		GIT_TAG v3.0.1
-
-		SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/catch2
-
-	)
-
-	list(APPEND ${PROJECT_NAME}_DEPENDENCIES catch2_project)
-
-
-	FetchContent_MakeAvailable(${${PROJECT_NAME}_DEPENDENCIES})
-
-	foreach(X IN LISTS ${PROJECT_NAME}_DEPENDENCIES)
-
-		FetchContent_GetProperties(${X}
-			SOURCE_DIR ${X}_SOURCE_DIR
-			BINARY_DIR ${X}_BINARY_DIR
-		)
-
-	endforeach() 
-
 #creating executable
-add_executable(SiE_Tests
+add_executable(SiE_MainTests
 
 
 	${PROJECT_SOURCE_DIR}/tests.cpp
 
 )
 
-set_property(TARGET SiE_Tests PROPERTY CXX_STANDARD 17)
+set_property(TARGET SiE_MainTests PROPERTY CXX_STANDARD 17)
 
 
 #adding libraries...
 
-target_link_libraries(SiE_Tests PUBLIC SiE)
+target_link_libraries(SiE_MainTests PUBLIC SiE)
 
-target_link_libraries(SiE_Tests PUBLIC Catch2::Catch2)
+#------------------- Extra Lines ----------------
 
-target_link_libraries(SiE_Tests PUBLIC Catch2::Catch2WithMain)
-
-
-#adding includes...
-
-
-target_include_directories(SiE_Tests PUBLIC ${PROJECT_SOURCE_DIR}/vendor/catch2/src)
+	# Extra Lines for alias copying_shader ...
+add_custom_command(TARGET SiE_MainTests POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                   ${CMAKE_SOURCE_DIR}/tests/base_shader $<TARGET_FILE_DIR:SiE_MainTests>/base_shader)

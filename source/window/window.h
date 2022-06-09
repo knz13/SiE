@@ -79,7 +79,7 @@ public:
     float GetDeltaTime();
     
 
-    void DrawingLoop();
+    void DrawFrame();
     
     
     static Window& GetCurrentWindow();
@@ -114,7 +114,7 @@ private:
 
     
     entt::entity m_MainCamera = entt::null;
-    
+    std::shared_ptr<Framebuffer> m_MainFrameBuffer;
     
 
     float m_DeltaTime = 0;
