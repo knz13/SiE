@@ -99,16 +99,16 @@ public:
         Texture<TextureType> tex([=](Texture<TextureType>& texture){
             
             texture.Bind();
-            GL_CALL(glTexParameteri(texture.GetType(), GL_TEXTURE_WRAP_S, GL_REPEAT));
-            GL_CALL(glTexParameteri(texture.GetType(), GL_TEXTURE_WRAP_T, GL_REPEAT));
-            GL_CALL(glTexParameteri(texture.GetType(), GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-            GL_CALL(glTexParameteri(texture.GetType(), GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+            SIE_GL_CALL(glTexParameteri(texture.GetType(), GL_TEXTURE_WRAP_S, GL_REPEAT));
+            SIE_GL_CALL(glTexParameteri(texture.GetType(), GL_TEXTURE_WRAP_T, GL_REPEAT));
+            SIE_GL_CALL(glTexParameteri(texture.GetType(), GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+            SIE_GL_CALL(glTexParameteri(texture.GetType(), GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 
-            GL_CALL(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
+            SIE_GL_CALL(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
             if (HashClassName<TextureType>() == HashClassName<Type2D>()) {
-                GL_CALL(glTexImage2D(texture.GetType(), 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data));
+                SIE_GL_CALL(glTexImage2D(texture.GetType(), 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data));
             }
-            GL_CALL(glGenerateMipmap(texture.GetType()));
+            SIE_GL_CALL(glGenerateMipmap(texture.GetType()));
 
             texture.Unbind();
         });

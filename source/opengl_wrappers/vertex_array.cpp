@@ -2,10 +2,10 @@
 
 VertexArray::VertexArray(){
     auto deleter = [](unsigned int* id){
-        GL_CALL(glDeleteVertexArrays(1,id));
+        SIE_GL_CALL(glDeleteVertexArrays(1,id));
     };
     m_ID = std::shared_ptr<unsigned int>(new unsigned int,deleter);
-    GL_CALL(glGenVertexArrays(1,m_ID.get()));
+    SIE_GL_CALL(glGenVertexArrays(1,m_ID.get()));
 }
 VertexBuffer& VertexArray::CreateVertexBuffer(unsigned int numberOfVertices) {
     m_VBO = std::make_unique<VertexBuffer>(*this);
@@ -19,7 +19,7 @@ VertexBuffer& VertexArray::CreateVertexBuffer() {
 }
 
 void VertexArray::Bind() {
-    GL_CALL(glBindVertexArray(*m_ID.get()));
+    SIE_GL_CALL(glBindVertexArray(*m_ID.get()));
     if(m_VBO){
         m_VBO.get()->Bind();
     }
@@ -29,7 +29,7 @@ void VertexArray::Bind() {
 }
 
 void VertexArray::Unbind() {
-    GL_CALL(glBindVertexArray(0));
+    SIE_GL_CALL(glBindVertexArray(0));
     if(m_VBO){
         m_VBO.get()->Unbind();
     }

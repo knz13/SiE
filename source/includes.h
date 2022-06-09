@@ -72,9 +72,9 @@ static bool GetGLError(int line, std::string file) {
 }
 
 #ifdef NDEBUG
-#define GL_CALL(x) x 
-#define GL_CALL_WITH_RESULT(var,x) var = x 
+#define SIE_GL_CALL(x) x 
+#define SIE_GL_CALL_WITH_RESULT(var,x) var = x 
 #else
-#define GL_CALL(x) ClearGLErrors(); x; if(GetGLError(__LINE__,__FILE__)) {;}
-#define GL_CALL_WITH_RESULT(var,x) ClearGLErrors(); var = x; if(GetGLError(__LINE__,__FILE__)) {;}
+#define SIE_GL_CALL(x) ClearGLErrors(); x; if(GetGLError(__LINE__,__FILE__)) {;}
+#define SIE_GL_CALL_WITH_RESULT(var,x) ClearGLErrors(); var = x; if(GetGLError(__LINE__,__FILE__)) {;}
 #endif

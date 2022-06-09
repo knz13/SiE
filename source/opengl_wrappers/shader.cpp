@@ -15,11 +15,11 @@ void Shader::Bind() {
     if(!m_ID){
         return;
     }
-    GL_CALL(glUseProgram(*m_ID.get()));
+    SIE_GL_CALL(glUseProgram(*m_ID.get()));
 }
 
 void Shader::Unbind() {
-    GL_CALL(glUseProgram(0));
+    SIE_GL_CALL(glUseProgram(0));
 }
 
 
@@ -51,10 +51,10 @@ bool Shader::SetShaders(std::unordered_map<ShaderType,std::vector<std::string>> 
 
         switch(type){
         case ShaderType::Vertex:
-            GL_CALL(shaderID = glCreateShader(GL_VERTEX_SHADER));
+            SIE_GL_CALL(shaderID = glCreateShader(GL_VERTEX_SHADER));
             break;
         case ShaderType::Fragment:
-            GL_CALL(shaderID = glCreateShader(GL_FRAGMENT_SHADER)); 
+            SIE_GL_CALL(shaderID = glCreateShader(GL_FRAGMENT_SHADER)); 
             break;
         }
 
@@ -69,7 +69,7 @@ bool Shader::SetShaders(std::unordered_map<ShaderType,std::vector<std::string>> 
             index++;
         }
 
-        GL_CALL(glShaderSource(shaderID,index,files.data(),lengths.data()));
+        SIE_GL_CALL(glShaderSource(shaderID,index,files.data(),lengths.data()));
 
         if(!CompileShader(shaderID,shaderTypeName)){
             return false;
@@ -87,17 +87,17 @@ bool Shader::SetShaders(std::unordered_map<ShaderType,std::vector<std::string>> 
 
 }
 bool Shader::CompileShader(unsigned int shaderID,std::string shaderTypeName) {
-    GL_CALL(glCompileShader(shaderID));
+    SIE_GL_CALL(glCompileShader(shaderID));
 
     GLint success = 0;
-    GL_CALL(glGetShaderiv(shaderID,GL_COMPILE_STATUS,&success));
+    SIE_GL_CALL(glGetShaderiv(shaderID,GL_COMPILE_STATUS,&success));
 
     if(success == GL_FALSE){
         GLint logsize = 0;
-        GL_CALL(glGetShaderiv(shaderID,GL_INFO_LOG_LENGTH,&logsize));
+        SIE_GL_CALL(glGetShaderiv(shaderID,GL_INFO_LOG_LENGTH,&logsize));
 
         std::vector<GLchar> errorLog(logsize);
-        GL_CALL(glGetShaderInfoLog(shaderID,logsize,&logsize,&errorLog[0]));
+        SIE_GL_CALL(glGetShaderInfoLog(shaderID,logsize,&logsize,&errorLog[0]));
 
         std::string errorStr;
         for(auto& character : errorLog){
@@ -106,7 +106,7 @@ bool Shader::CompileShader(unsigned int shaderID,std::string shaderTypeName) {
 
         DEBUG_LOG("Shader compilation error: " << errorStr << " at shader of type " + shaderTypeName);
 
-        GL_CALL(glDeleteShader(shaderID));
+        SIE_GL_CALL(glDeleteShader(shaderID));
 
         return false;
 
@@ -115,28 +115,28 @@ bool Shader::CompileShader(unsigned int shaderID,std::string shaderTypeName) {
 
     if(!m_ID){
         auto deleter = [](unsigned int* id){
-            GL_CALL(glDeleteProgram(*id));
+            SIE_GL_CALL(glDeleteProgram(*id));
         };
 
         m_ID = std::shared_ptr<unsigned int>(new unsigned int(0),deleter);
     }
     if(!m_AlreadyCreatedProgram){
 
-        GL_CALL(*m_ID.get() = glCreateProgram());
+        SIE_GL_CALL(*m_ID.get() = glCreateProgram());
         m_AlreadyCreatedProgram = true;
     }
 
-    GL_CALL(glAttachShader(*m_ID.get(),shaderID));
+    SIE_GL_CALL(glAttachShader(*m_ID.get(),shaderID));
 
     return true;
 
 }
 
 bool Shader::LinkShader() {
-    GL_CALL(glLinkProgram(*m_ID.get()));
+    SIE_GL_CALL(glLinkProgram(*m_ID.get()));
 
     int isLinked = 0;
-    GL_CALL(glGetProgramiv(*m_ID.get(),GL_LINK_STATUS,&isLinked));
+    SIE_GL_CALL(glGetProgramiv(*m_ID.get(),GL_LINK_STATUS,&isLinked));
 
     if(isLinked == GL_FALSE){
         GLint maxLength = 0;
@@ -155,8 +155,8 @@ bool Shader::LinkShader() {
         
         
         for(auto id : m_CompiledShadersCache){
-            GL_CALL(glDetachShader(*m_ID.get(),id));
-            GL_CALL(glDeleteShader(id));
+            SIE_GL_CALL(glDetachShader(*m_ID.get(),id));
+            SIE_GL_CALL(glDeleteShader(id));
         }
 
         m_ID.reset();
@@ -169,20 +169,20 @@ bool Shader::LinkShader() {
     // loading the uniforms
 
     int count;
-    GL_CALL(glGetProgramiv(*m_ID.get(),GL_ACTIVE_UNIFORMS,&count));
+    SIE_GL_CALL(glGetProgramiv(*m_ID.get(),GL_ACTIVE_UNIFORMS,&count));
 
     for(int i = 0;i<count;i++){
 
         std::vector<char> maxSize(255);
         std::string name = "";
         int length,size,type,location;
-        GL_CALL(glGetActiveUniform(*m_ID.get(),i,maxSize.size(),&length,&size,(GLenum*)&type,maxSize.data()));
+        SIE_GL_CALL(glGetActiveUniform(*m_ID.get(),i,maxSize.size(),&length,&size,(GLenum*)&type,maxSize.data()));
         
         for(int i = 0;i<length;i++){
             name += maxSize[i];
         }
         
-        GL_CALL(location = glGetUniformLocation(*m_ID.get(),name.c_str()));
+        SIE_GL_CALL(location = glGetUniformLocation(*m_ID.get(),name.c_str()));
 
 
         ShaderUniformContainer container;
@@ -224,7 +224,7 @@ ShaderCreationProperties::ShaderCreationProperties(Shader& master) {
 bool Shader::SetUniform1f(const string& name, float value) {
     this->Bind();
     if(m_UniformLocations.find(name) != m_UniformLocations.end()){
-        GL_CALL(glUniform1f(m_UniformLocations[name].location,value));
+        SIE_GL_CALL(glUniform1f(m_UniformLocations[name].location,value));
         return true;
     }
     else{
@@ -236,7 +236,7 @@ bool Shader::SetUniform1f(const string& name, float value) {
 bool Shader::SetUniform1i(const string& name, int value) {
     this->Bind();
     if(m_UniformLocations.find(name) != m_UniformLocations.end()){
-        GL_CALL(glUniform1i(m_UniformLocations[name].location,value));
+        SIE_GL_CALL(glUniform1i(m_UniformLocations[name].location,value));
         return true;
     }
     else{
@@ -249,7 +249,7 @@ bool Shader::SetUniform1i(const string& name, int value) {
 bool Shader::SetUniform3f(const string& name, float v0, float v1, float v2) {
     this->Bind();
     if(m_UniformLocations.find(name) != m_UniformLocations.end()){
-        GL_CALL(glUniform3f(m_UniformLocations[name].location,v0,v1,v2));
+        SIE_GL_CALL(glUniform3f(m_UniformLocations[name].location,v0,v1,v2));
         return true;
     }
     else{
@@ -262,7 +262,7 @@ bool Shader::SetUniform3f(const string& name, float v0, float v1, float v2) {
 bool Shader::SetUniform4f(const string& name, float v0, float v1, float v2, float v3) {
     this->Bind();
     if(m_UniformLocations.find(name) != m_UniformLocations.end()){
-        GL_CALL(glUniform4f(m_UniformLocations[name].location,v0,v1,v2,v3));
+        SIE_GL_CALL(glUniform4f(m_UniformLocations[name].location,v0,v1,v2,v3));
         return true;
     }
     else{
@@ -274,7 +274,7 @@ bool Shader::SetUniform4f(const string& name, float v0, float v1, float v2, floa
 bool Shader::SetUniformMat4f(const string& name, const glm::mat4& mat) {
     this->Bind();
     if(m_UniformLocations.find(name) != m_UniformLocations.end()){
-        GL_CALL(glUniformMatrix4fv(m_UniformLocations[name].location,1,GL_FALSE,glm::value_ptr(mat)));
+        SIE_GL_CALL(glUniformMatrix4fv(m_UniformLocations[name].location,1,GL_FALSE,glm::value_ptr(mat)));
         return true;
     }
     else{
@@ -285,7 +285,7 @@ bool Shader::SetUniformMat4f(const string& name, const glm::mat4& mat) {
 bool Shader::SetUniform2f(const string& name, float v0, float v1) {
     this->Bind();
     if(m_UniformLocations.find(name) != m_UniformLocations.end()){
-        GL_CALL(glUniform2f(m_UniformLocations[name].location,v0,v1));
+        SIE_GL_CALL(glUniform2f(m_UniformLocations[name].location,v0,v1));
         return true;
     }
     else{

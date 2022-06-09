@@ -153,7 +153,7 @@ void Camera::Render()
             m_RenderTarget.get()->Clear();
             m_RenderTarget.get()->Bind();
         }
-        GL_CALL(glViewport(m_ViewPort.x, m_ViewPort.y, m_ViewPort.z, m_ViewPort.w));
+        SIE_GL_CALL(glViewport(m_ViewPort.x, m_ViewPort.y, m_ViewPort.z, m_ViewPort.w));
         m_DrawingFunc(*this);
         if (HasRenderTarget()) {
             m_RenderTarget.get()->Unbind();

@@ -103,10 +103,10 @@ void Mesh::Draw(const glm::mat4& mvp) {
 
     m_VAO->Bind();
     if(m_VAO->HasIndexBuffer()){
-        GL_CALL(glDrawElements(GL_TRIANGLES,m_VAO->GetDrawCount(),GL_UNSIGNED_INT,nullptr));
+        SIE_GL_CALL(glDrawElements(GL_TRIANGLES,m_VAO->GetDrawCount(),GL_UNSIGNED_INT,nullptr));
     }
     else {
-        GL_CALL(glDrawArrays(GL_TRIANGLES,0,m_VAO->GetDrawCount()));
+        SIE_GL_CALL(glDrawArrays(GL_TRIANGLES,0,m_VAO->GetDrawCount()));
     }
 
     m_PostDrawFuncs.EmitEvent(*this);

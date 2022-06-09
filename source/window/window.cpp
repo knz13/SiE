@@ -115,14 +115,14 @@ Window::Window(WindowCreationProperties prop) : m_Properties(prop) {
 
     });
     
-    //GL_CALL(glEnable(GL_PROGRAM_POINT_SIZE));
-    GL_CALL(glEnable(GL_STENCIL_TEST));
-    GL_CALL(glEnable(GL_DEPTH_TEST));
-    //GL_CALL(glEnable(GL_CULL_FACE));
-    GL_CALL(glEnable(GL_BLEND));
-    GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-    GL_CALL(glStencilFunc(GL_ALWAYS, 1, 0xFF));
-    GL_CALL(glStencilMask(0x00));
+    //SIE_GL_CALL(glEnable(GL_PROGRAM_POINT_SIZE));
+    SIE_GL_CALL(glEnable(GL_STENCIL_TEST));
+    SIE_GL_CALL(glEnable(GL_DEPTH_TEST));
+    //SIE_GL_CALL(glEnable(GL_CULL_FACE));
+    SIE_GL_CALL(glEnable(GL_BLEND));
+    SIE_GL_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+    SIE_GL_CALL(glStencilFunc(GL_ALWAYS, 1, 0xFF));
+    SIE_GL_CALL(glStencilMask(0x00));
     
 
     
@@ -219,10 +219,10 @@ void Window::BeginDrawState() {
     }
 
     glm::vec3 color = m_ClearColor.Normalized();
-    GL_CALL(glClearColor(color.x,color.y,color.z,1.0f));
-    GL_CALL(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
-    GL_CALL(glStencilMask(0x00));
-    GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+    SIE_GL_CALL(glClearColor(color.x,color.y,color.z,1.0f));
+    SIE_GL_CALL(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
+    SIE_GL_CALL(glStencilMask(0x00));
+    SIE_GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 
 }
@@ -252,7 +252,7 @@ void Window::SetViewPort(int x, int y, int width, int height)
         m_Properties.width = width - x;
         m_Properties.height = height - y;
         //glm::vec4 viewport = GetCurrentCamera().GetAsObject().GetComponent<Camera>().GetViewPort();
-        //GL_CALL(glViewport(x,y,width,height));
+        //SIE_GL_CALL(glViewport(x,y,width,height));
     }
 }
 

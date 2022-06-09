@@ -8,20 +8,20 @@ void VertexBuffer::CreateNew(int numberOfElements) {
 }
 
 void VertexBuffer::Bind() {
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER,*m_ID.get()));
+    SIE_GL_CALL(glBindBuffer(GL_ARRAY_BUFFER,*m_ID.get()));
 }
 
 void VertexBuffer::Unbind() {
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER,0));
+    SIE_GL_CALL(glBindBuffer(GL_ARRAY_BUFFER,0));
 }
 
 VertexBuffer::VertexBuffer(VertexArray& master) : m_Master(master) {
     auto destructor = [](unsigned int* id){
-        GL_CALL(glDeleteBuffers(1,id));
+        SIE_GL_CALL(glDeleteBuffers(1,id));
         delete id;
     };
     m_ID = std::shared_ptr<unsigned int>(new unsigned int(0),destructor);
-    GL_CALL(glGenBuffers(1,m_ID.get()));
+    SIE_GL_CALL(glGenBuffers(1,m_ID.get()));
 }
 
 
@@ -40,7 +40,7 @@ void VertexBuffer::Generate() {
     }
     this->Bind();
     m_Master.Bind();
-    GL_CALL(glBufferData(GL_ARRAY_BUFFER,size,NULL,GL_STATIC_DRAW));
+    SIE_GL_CALL(glBufferData(GL_ARRAY_BUFFER,size,NULL,GL_STATIC_DRAW));
 
     unsigned int offset = 0;
     int index = 0;
@@ -48,9 +48,9 @@ void VertexBuffer::Generate() {
 
 
     for(auto& attribute : m_AttributeTempMemory){
-        GL_CALL(glBufferSubData(GL_ARRAY_BUFFER,offset,attribute.offsetSize,attribute.data));
-        GL_CALL(glVertexAttribPointer(index,attribute.count,attribute.type,attribute.normalized? GL_TRUE:GL_FALSE,attribute.count*GL_SIZEOF(attribute.type),(const void*)offset));
-        GL_CALL(glEnableVertexAttribArray(index));
+        SIE_GL_CALL(glBufferSubData(GL_ARRAY_BUFFER,offset,attribute.offsetSize,attribute.data));
+        SIE_GL_CALL(glVertexAttribPointer(index,attribute.count,attribute.type,attribute.normalized? GL_TRUE:GL_FALSE,attribute.count*GL_SIZEOF(attribute.type),(const void*)offset));
+        SIE_GL_CALL(glEnableVertexAttribArray(index));
         offset += attribute.offsetSize;
         index++;
     }
