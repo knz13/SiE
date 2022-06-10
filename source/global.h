@@ -16,7 +16,9 @@
 #ifndef GLEW_STATIC
 #define GLEW_STATIC
 #endif
-#include "../vendor/glew/include/GL/glew.h"
+
+#define SIE_GL_INCLUDE "../vendor/glew/include/GL/glew.h"
+
 #include "../vendor/glm/glm/gtc/type_ptr.hpp"
 #include "general/structures.h"
 #include "general/color.h"
@@ -32,6 +34,7 @@
 #include "assimp/Importer.hpp"
 
 
+#include SIE_GL_INCLUDE
 
 
 

@@ -84,9 +84,10 @@ Window::Window(WindowCreationProperties prop) : m_Properties(prop) {
             DEBUG_ERROR("Glew wasn't initiated!");
             return;
         }
+
     }
 
-    
+
 
     GameObject mainCamera = GameObject::CreateNew("Main Camera");
     mainCamera.AddComponent<Camera>();
@@ -284,13 +285,13 @@ void Window::DrawFrame() {
     GameObject::ForEach([&](GameObject obj) {
         for (auto& name : obj.GetComponentsNames()) {
             if (auto comp = obj.GetComponentByName(name); comp) {
-                //comp.GetAs<GameComponent>()->Update(m_DeltaTime);
+                comp.GetAs<GameComponent>()->Update(m_DeltaTime);
             }
         }
     });
 
     Camera::ForEach([](Camera& camera) {
-        if (!camera.GetMasterObject().GetAsObject().IsActive()) {
+        if (!camera.GetMasterObject().GetAs<GameObject>().IsActive()) {
             return;
         }
         if (!camera.IsEnabled()) {

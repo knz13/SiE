@@ -168,6 +168,10 @@ add_subdirectory(tests)
 #repository download and settings for alias async...
 
 
+	#adding options
+
+	set(BUILD_SHARED_LIBS OFF CACHE INTERNAL "")
+
 	FetchContent_Declare(async_project
 
 		GIT_REPOSITORY https://github.com/Amanieu/asyncplusplus
@@ -245,6 +249,8 @@ target_link_libraries(SiE PUBLIC libglew_static)
 
 target_link_libraries(SiE PUBLIC assimp)
 
+target_link_libraries(SiE PUBLIC Async++)
+
 
 #adding includes...
 
@@ -266,3 +272,5 @@ target_include_directories(SiE PUBLIC ${PROJECT_SOURCE_DIR}/vendor/yael/include)
 target_include_directories(SiE PUBLIC ${PROJECT_SOURCE_DIR}/vendor/assimp/include)
 
 target_include_directories(SiE PUBLIC ${PROJECT_SOURCE_DIR}/vendor/stb/)
+
+target_include_directories(SiE PUBLIC ${PROJECT_SOURCE_DIR}/vendor/async/include)

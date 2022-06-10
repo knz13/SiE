@@ -35,7 +35,7 @@ namespace MeshAttribute {
     };
 };
 
-class Mesh : public yael::event_receiver,public GameComponent<Mesh>{
+class Mesh : public yael::event_receiver,public ecspp::DefineComponent<Mesh, GameComponent> {
 public:
     Mesh();
     
@@ -48,7 +48,6 @@ public:
     std::string GetShaderName();
     Shader& GetShader();
     
-
     yael::event_sink<void(Mesh&,Shader&,const glm::mat4&)> PreDrawn();
     yael::event_sink<void(Mesh&)> PostDrawn();
 
@@ -60,7 +59,7 @@ public:
 
     bool ReadyToDraw();
 
-    void TrySetMesh(std::string path);
+    bool TrySetMesh(std::string path);
     void Draw(const glm::mat4& mvp);
 
 private:

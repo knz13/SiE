@@ -27,20 +27,18 @@ vector<ModelLoader::Texture> ModelLoader::loadMaterialTextures(aiMaterial* mat, 
 	return Itextures;
 }
 
-LoadedModelResult ModelLoader::ProcessData(Mesh& model,const aiScene& scene,std::string modelFilePath,LoadingModelProperties prop)
+LoadedModelResult ModelLoader::ProcessData(const aiScene& scene,std::string modelFilePath, LoadingModelProperties prop)
 {		
 	if (scene.mNumMeshes > 0) {
 		for (unsigned int i = 0; i < scene.mNumMeshes;i++) {
 			prop.currentModelName = scene.mMeshes[i]->mName.C_Str();
-			if(ModelLoader::AssimpGetMeshData(scene.mMeshes[i],model,prop)){
-				
-			}
+			ModelLoader::AssimpGetMeshData(scene.mMeshes[i], prop);
 		}
 	}
 	return LoadedModelResult(true);
 }
 
-LoadedModelResult ModelLoader::AssimpGetMeshData(const aiMesh* mesh,Mesh& model,LoadingModelProperties prop)
+LoadedModelResult ModelLoader::AssimpGetMeshData(const aiMesh* mesh, LoadingModelProperties prop)
 {
 	aiFace* face;
 	MeshAttribute::Vertex vertex;
@@ -93,9 +91,7 @@ LoadedModelResult ModelLoader::AssimpGetMeshData(const aiMesh* mesh,Mesh& model,
 		vertex.indices.push_back(face->mIndices[2]);
 	}
 	
-	model.SetVertices(vertex);
-
-	prop.initializationFunc(model);
+	
 	
 	m_ModelCache[prop.fileName][prop.currentModelName] = std::move(vertex);
 
@@ -105,15 +101,15 @@ LoadedModelResult ModelLoader::AssimpGetMeshData(const aiMesh* mesh,Mesh& model,
 
 
 
-LoadedModelResult ModelLoader::LoadModel(std::string fileName,Mesh& drawable,LoadingModelProperties prop) {
+LoadedModelResult ModelLoader::LoadModel(std::string fileName) {
     if(!std::filesystem::exists(fileName)){
 		LOG("Couldn't load model at " + fileName + " because the file was not found!");
 		return LoadedModelResult(false);
 	}
 
-	prop.fileName = fileName;
+	
 	if(m_ModelCache.find(fileName) != m_ModelCache.end()){
-		LoadedModelResult result = CopyModelFromCache(fileName,drawable,prop);
+		LoadedModelResult result = std::move(CopyModelFromCache(fileName));
 		return result;
 	}
 
@@ -126,42 +122,29 @@ LoadedModelResult ModelLoader::LoadModel(std::string fileName,Mesh& drawable,Loa
 	}
 	else {
 		
-		LoadedModelResult result = ProcessData(drawable,*modelScene,fileName,prop);
-		if(!result){
-			return LoadedModelResult(false);
-		}
-		return LoadedModelResult(true);
+		LoadedModelResult result = std::move(ProcessData(*modelScene, fileName, {}));
+		return result;
 		
 	}
 }
 
-LoadedModelResult ModelLoader::CopyModelFromCache(std::string cacheName,Mesh& dr,LoadingModelProperties prop) {
+LoadedModelResult ModelLoader::CopyModelFromCache(std::string cacheName) {
     
 	MeshAttribute::Vertex vertices;
 
-	
 	for (auto& [name,vertex] : m_ModelCache[cacheName]){
-		
-
-		
-
 		vertices.positions.insert(vertices.positions.end(),vertex.positions.begin(),vertex.positions.end());
 		vertices.normals.insert(vertices.normals.end(),vertex.normals.begin(),vertex.normals.end());
 		vertices.texCoords.insert(vertices.texCoords.end(),vertex.texCoords.begin(),vertex.texCoords.end());
 		vertices.tangents.insert(vertices.tangents.end(),vertex.tangents.begin(),vertex.tangents.end());
-		vertices.indices.insert(vertices.indices.end(),vertex.indices.begin(),vertex.indices.end());
-
-	
-
-		
+		vertices.indices.insert(vertices.indices.end(), vertex.indices.begin(), vertex.indices.end());
 
 	}
 
-	dr.SetVertices(vertices);
+	LoadedModelResult result(true);
+	result.vertices = vertices;
 
-	prop.initializationFunc(dr);
-
-	return LoadedModelResult(true);
+	return result;
 }
 
 

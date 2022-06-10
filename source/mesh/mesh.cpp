@@ -1,6 +1,8 @@
 #include "mesh.h"
 #include "SiE.h"
-
+#include "../model_loader/model_loader.h"
+#define LIBASYNC_STATIC
+#include "../vendor/async/include/async++.h"
 
 
 bool Mesh::SetShader(std::string shaderLocation) {
@@ -42,9 +44,29 @@ bool Mesh::ReadyToDraw() {
     return m_ShaderName != "" && shaderValid && GetActiveState();
 }
 
-void Mesh::TrySetMesh(std::string path)
+bool Mesh::TrySetMesh(std::string path)
 {
+    static async::task<MeshAttribute::Vertex> m_SetMeshFuture;
+    if (path != "") {
+        m_SetMeshFuture = async::spawn([=]() {
+            if (auto result = ModelLoader::LoadModel(path); result) {
+                return result.vertices;
+            }
+            return MeshAttribute::Vertex();
+            });
 
+        return true;
+    }
+    else {
+        if (m_SetMeshFuture.valid()) {
+            if (m_SetMeshFuture.ready()) {
+                SetVertices(m_SetMeshFuture.get());
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
 }
 
 
@@ -125,7 +147,7 @@ yael::event_sink<void(Mesh&)> Mesh::PostDrawn() {
 }
 
 void Mesh::Update(float deltaTime) {
-    
+    TrySetMesh("");
 }
 
 

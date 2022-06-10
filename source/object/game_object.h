@@ -13,39 +13,7 @@ private:
 	friend class GameObject;
 };
 
-
-namespace GuiLayer {
-    class PropertiesView;
-}
-
-class TransformComponent;
-
-class GameObject : public BaseObject<GameObject>, public ecspp::RegisterStorage<GameObject,GameObjectProperties> {
-public:
-	GameObject(entt::entity e);
-
-	TransformComponent& Transform();
-
-	void SetHighlightState(bool state);
-	void SetHighlightColor(Color color);
-	Color GetHighlightColor();
-	bool GetHighlightState();
-	bool IsActive();
-	void SetActiveState(bool state);
-	
-
-	
-	
-protected:
-	
-
-    friend class GuiLayer::PropertiesView;
-};
-
-
-
-template<typename Component>
-class GameComponent : public ecspp::ComponentSpecifier<Component, GameObject> {
+class GameComponent : public ecspp::Component{
 public:
     bool IsEnabled() {
         return GetActiveState();
@@ -94,3 +62,34 @@ private:
 
     friend class GameObject;
 };
+
+namespace GuiLayer {
+    class PropertiesView;
+}
+
+class TransformComponent;
+
+class GameObject : public BaseObject<GameObject>, public ecspp::RegisterStorage<GameObject,GameObjectProperties>,
+    public ecspp::RegisterComponent<GameObject,GameComponent>{
+public:
+	GameObject(entt::entity e);
+
+	TransformComponent& Transform();
+
+	void SetHighlightState(bool state);
+	void SetHighlightColor(Color color);
+	Color GetHighlightColor();
+	bool GetHighlightState();
+	bool IsActive();
+	void SetActiveState(bool state);
+	
+
+	
+	
+protected:
+	
+
+    friend class GuiLayer::PropertiesView;
+};
+
+

@@ -58,8 +58,8 @@ int main() {
     mesh.SetShader("base_shader");
 
     
-    mesh.PreDrawn().Connect([&](Mesh& mesh, Shader& shader, auto matrix) {
-        mesh.GetMasterObject().GetAsObject().Transform().Rotate(0,15 * window.GetDeltaTime(),0);
+    mesh.PreDrawn().Connect([&](Mesh& mesh, Shader& shader, const glm::mat4& matrix) {
+        mesh.GetMasterObject().GetAs<GameObject>().Transform().Rotate(0,15 * window.GetDeltaTime(),0);
     });
     
 

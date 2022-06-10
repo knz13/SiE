@@ -4,7 +4,7 @@
 class Framebuffer;
 class Window;
 class RenderTextureAsset;
-class Camera : public GameComponent<Camera> {
+class Camera : public ecspp::DefineComponent<Camera, GameComponent> {
 
     KV_CLASS
     
