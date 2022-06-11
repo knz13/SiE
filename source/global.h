@@ -31,7 +31,6 @@
 #include "general/color.h"
 #include "general/math.h"
 #include "general/helpers.h"
-#define SDL_MAIN_HANDLED
 #include "../vendor/sdl_repo/include/SDL.h"
 #include "assimp/material.h"
 #include "assimp/mesh.h"
