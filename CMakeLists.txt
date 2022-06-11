@@ -77,22 +77,6 @@ add_subdirectory(tests)
 	list(APPEND ${PROJECT_NAME}_DEPENDENCIES glm_project)
 
 
-#repository download and settings for alias glew...
-
-
-	FetchContent_Declare(glew_project
-
-		GIT_REPOSITORY https://github.com/Perlmint/glew-cmake
-
-		GIT_TAG glew-cmake-2.2.0
-
-		SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/glew
-
-	)
-
-	list(APPEND ${PROJECT_NAME}_DEPENDENCIES glew_project)
-
-
 #repository download and settings for alias ecspp...
 
 
@@ -245,8 +229,6 @@ target_link_libraries(SiE PUBLIC SDL2::SDL2-static)
 
 target_link_libraries(SiE PUBLIC SDL2::SDL2main)
 
-target_link_libraries(SiE PUBLIC libglew_static)
-
 target_link_libraries(SiE PUBLIC assimp)
 
 target_link_libraries(SiE PUBLIC Async++)
@@ -262,8 +244,6 @@ target_include_directories(SiE PUBLIC ${PROJECT_SOURCE_DIR}/vendor)
 target_include_directories(SiE PUBLIC ${PROJECT_SOURCE_DIR}/vendor/sdl_repo/include)
 
 target_include_directories(SiE PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glm/)
-
-target_include_directories(SiE PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glew/include)
 
 target_include_directories(SiE PUBLIC ${PROJECT_SOURCE_DIR}/vendor/ecspp/include)
 
