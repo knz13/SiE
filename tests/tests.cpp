@@ -9,7 +9,7 @@ int main() {
 	prop.openGLVersionMinor = 2;
 	prop.width = 1280;
 	prop.height = 720;
-	prop.multisamplingCount = 10;
+	prop.multisamplingCount = 16;
 
 	Window window(prop);
 
@@ -55,15 +55,24 @@ int main() {
     Mesh& mesh = obj.AddComponent<Mesh>();
 
     mesh.SetVertices(vertices);
-    mesh.SetShader("base_shader");
+    mesh.SetShader("assets/shaders/base_shader");
 
     
-    mesh.PreDrawn().Connect([&](Mesh& mesh, Shader& shader, const glm::mat4& matrix) {
-        mesh.GetMasterObject().GetAs<GameObject>().Transform().Rotate(0,15 * window.GetDeltaTime(),0);
-    });
-    
-
     obj.Transform().SetPosition(0,0,0);
+    
+
+    GameObject obj2 = GameObject::CreateNew("Mesh");
+    obj2.AddComponent<Mesh>().TrySetMesh("assets/models/robot obj.obj");
+    obj2.GetComponent<Mesh>().SetShader("assets/shaders/base_shader");
+    obj2.Transform().SetPosition(0,0,-20);
+
+    mesh.PreDrawn().Connect([&](Mesh& mesh, Shader& shader, const glm::mat4& matrix) {
+        mesh.GetMasterObject().GetAs<GameObject>().Transform().Rotate(0,60 * window.GetDeltaTime(),0);
+        if (obj2.GetComponent<Mesh>().TrySetMesh("")) {
+            obj.Transform().SetPosition(0,0,-2);
+            
+        }
+    });
 
 	while (window.IsOpen()) {
 

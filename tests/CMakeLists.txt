@@ -57,4 +57,4 @@ target_link_libraries(SiE_MainTests PUBLIC SiE)
 	# Extra Lines for alias copying_shader ...
 add_custom_command(TARGET SiE_MainTests POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
-                   ${CMAKE_SOURCE_DIR}/tests/base_shader $<TARGET_FILE_DIR:SiE_MainTests>/base_shader)
+                   ${CMAKE_SOURCE_DIR}/tests/assets $<TARGET_FILE_DIR:SiE_MainTests>/assets)

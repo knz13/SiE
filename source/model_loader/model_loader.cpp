@@ -29,6 +29,7 @@ vector<ModelLoader::Texture> ModelLoader::loadMaterialTextures(aiMaterial* mat, 
 
 LoadedModelResult ModelLoader::ProcessData(const aiScene& scene,std::string modelFilePath, LoadingModelProperties prop)
 {		
+	prop.fileName = modelFilePath;
 	if (scene.mNumMeshes > 0) {
 		for (unsigned int i = 0; i < scene.mNumMeshes;i++) {
 			prop.currentModelName = scene.mMeshes[i]->mName.C_Str();
@@ -93,6 +94,7 @@ LoadedModelResult ModelLoader::AssimpGetMeshData(const aiMesh* mesh, LoadingMode
 	
 	
 	
+
 	m_ModelCache[prop.fileName][prop.currentModelName] = std::move(vertex);
 
 	return LoadedModelResult(true);
@@ -123,6 +125,9 @@ LoadedModelResult ModelLoader::LoadModel(std::string fileName) {
 	else {
 		
 		LoadedModelResult result = std::move(ProcessData(*modelScene, fileName, {}));
+		if (result) {
+			return CopyModelFromCache(fileName);
+		}
 		return result;
 		
 	}

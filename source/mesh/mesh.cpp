@@ -41,7 +41,7 @@ bool Mesh::ReadyToDraw() {
 
     bool shaderValid = false;
     Window::GetCurrentWindow().Create().CachedShader(m_ShaderName,&shaderValid);
-    return m_ShaderName != "" && shaderValid && GetActiveState();
+    return m_ShaderName != "" && shaderValid && GetActiveState() && m_Vertices.CheckValid();
 }
 
 bool Mesh::TrySetMesh(std::string path)
