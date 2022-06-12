@@ -227,8 +227,6 @@ set_property(TARGET SiE PROPERTY CXX_STANDARD 17)
 
 target_link_libraries(SiE PUBLIC SDL2::SDL2-static)
 
-target_link_libraries(SiE PUBLIC SDL2::SDL2main)
-
 target_link_libraries(SiE PUBLIC assimp)
 
 target_link_libraries(SiE PUBLIC Async++)
