@@ -6,14 +6,14 @@
 #include <filesystem>
 #include <memory>
 #include <map>
-#include "../vendor/glm/glm/gtc/type_ptr.hpp"
-#include "../vendor/glm/glm/glm.hpp"
-#include "../vendor/glm/glm/gtc/quaternion.hpp"
-#include "../vendor/glm/glm/gtx/quaternion.hpp"
+#include "glm/gtc/type_ptr.hpp"
+#include "glm/glm.hpp"
+#include "glm/gtc/quaternion.hpp"
+#include "glm/gtx/quaternion.hpp"
 #include "general/color.h"
-#include "../vendor/glm/glm/gtc/type_ptr.hpp"
-#include "../vendor/ecspp/include/ecspp.h"
-#include "../vendor/yael/include/yael.h"
+#include "glm/gtc/type_ptr.hpp"
+#include "ecspp.h"
+#include "yael.h"
 
 #ifdef SIE_INCLUDE_GL
 

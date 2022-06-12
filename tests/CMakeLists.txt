@@ -58,3 +58,6 @@ target_link_libraries(SiE_MainTests PUBLIC SiE)
 add_custom_command(TARGET SiE_MainTests POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
                    ${CMAKE_SOURCE_DIR}/tests/assets $<TARGET_FILE_DIR:SiE_MainTests>/assets)
+
+	# Extra Lines for alias setting_configs ...
+add_compile_definitions(SIE_INCLUDE_GL SIE_GL_INCLUDE_PATH="GL/glew.h")

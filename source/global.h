@@ -8,20 +8,20 @@
 #include <unordered_map>
 #include <filesystem>
 #include <map>
-#include "../vendor/glm/glm/glm.hpp"
-#include "../vendor/glm/glm/gtc/quaternion.hpp"
-#include "../vendor/glm/glm/gtx/quaternion.hpp"
+#include "glm/glm.hpp"
+#include "glm/gtc/quaternion.hpp"
+#include "glm/gtx/quaternion.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
-#include "../vendor/glm/glm/gtx/matrix_decompose.hpp"
+#include "glm/gtx/matrix_decompose.hpp"
 #ifndef GLEW_STATIC
 #define GLEW_STATIC
 #endif
-#include "../vendor/glm/glm/gtc/type_ptr.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "general/structures.h"
 #include "general/color.h"
 #include "general/math.h"
 #include "general/helpers.h"
-#include "../vendor/sdl_repo/include/SDL.h"
+#include "SDL.h"
 #include "assimp/material.h"
 #include "assimp/mesh.h"
 #include "assimp/scene.h"
