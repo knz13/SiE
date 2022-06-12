@@ -11,10 +11,19 @@
 #include "../vendor/glm/glm/gtc/quaternion.hpp"
 #include "../vendor/glm/glm/gtx/quaternion.hpp"
 #include "general/color.h"
-#include "../vendor/glew/include/GL/glew.h"
 #include "../vendor/glm/glm/gtc/type_ptr.hpp"
 #include "../vendor/ecspp/include/ecspp.h"
 #include "../vendor/yael/include/yael.h"
+
+#ifdef SIE_INCLUDE_GL
+
+#ifndef SIE_GL_INCLUDE_PATH
+#define SIE_GL_INCLUDE_PATH "../vendor/glew/include/GL/glew.h"
+#endif 
+
+#include SIE_GL_INCLUDE_PATH
+#endif
+
 
 using namespace std;
 

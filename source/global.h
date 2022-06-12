@@ -16,16 +16,6 @@
 #ifndef GLEW_STATIC
 #define GLEW_STATIC
 #endif
-
-#ifdef SIE_INCLUDE_GL
-
-#ifndef SIE_GL_INCLUDE_PATH
-#define SIE_GL_INCLUDE_PATH "../vendor/glew/include/GL/glew.h"
-#endif 
-
-#include SIE_GL_INCLUDE_PATH
-#endif
-
 #include "../vendor/glm/glm/gtc/type_ptr.hpp"
 #include "general/structures.h"
 #include "general/color.h"
