@@ -14,18 +14,8 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "ecspp.h"
 #include "yael.h"
+#include "../vendor/glew/include/GL/glew.h"
 
-#ifdef SIE_INCLUDE_GL
-
-#ifndef SIE_GL_INCLUDE_PATH
-#define SIE_GL_INCLUDE_PATH "../vendor/glew/include/GL/glew.h"
-#endif 
-
-#include SIE_GL_INCLUDE_PATH
-#endif
-
-
-using namespace std;
 
 
 #define GL_SIZEOF(x) TestSize(x)

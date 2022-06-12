@@ -169,6 +169,22 @@ add_subdirectory(tests)
 	list(APPEND ${PROJECT_NAME}_DEPENDENCIES async_project)
 
 
+#repository download and settings for alias glew...
+
+
+	FetchContent_Declare(glew_project
+
+		GIT_REPOSITORY https://github.com/Perlmint/glew-cmake
+
+		GIT_TAG glew-cmake-2.2.0
+
+		SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/glew
+
+	)
+
+	list(APPEND ${PROJECT_NAME}_DEPENDENCIES glew_project)
+
+
 	FetchContent_MakeAvailable(${${PROJECT_NAME}_DEPENDENCIES})
 
 	foreach(X IN LISTS ${PROJECT_NAME}_DEPENDENCIES)
@@ -231,6 +247,8 @@ target_link_libraries(SiE PUBLIC assimp)
 
 target_link_libraries(SiE PUBLIC Async++)
 
+target_link_libraries(SiE PUBLIC libglew_static)
+
 
 #adding includes...
 
@@ -252,3 +270,5 @@ target_include_directories(SiE PUBLIC ${PROJECT_SOURCE_DIR}/vendor/assimp/includ
 target_include_directories(SiE PUBLIC ${PROJECT_SOURCE_DIR}/vendor/stb/)
 
 target_include_directories(SiE PUBLIC ${PROJECT_SOURCE_DIR}/vendor/async/include)
+
+target_include_directories(SiE PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glew/include)
