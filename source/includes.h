@@ -62,7 +62,7 @@ static unsigned int TestSize(unsigned int dataType) {
 #else
 #define DEBUG_LOG(x) cout << "LOG: " << x << endl <<   " At line: "<< __LINE__ << endl << "In file: " << __FILE__ << endl
 #define DEBUG_WARN(x) cout << "WARNING: " << x << endl <<  "At line: "<< __LINE__ << endl << "In file: " << __FILE__ << endl
-#define DEBUG_ERROR(x) cout << "ERROR! -> " << x  << endl <<  "At line: "<< __LINE__ << endl << "In file: " << __FILE__ << endl; __debugbreak()
+#define DEBUG_ERROR(x) cout << "ERROR! -> " << x  << endl <<  "At line: "<< __LINE__ << endl << "In file: " << __FILE__ << endl;
 #endif
 
 static void ClearGLErrors() {

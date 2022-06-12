@@ -40,7 +40,7 @@ Framebuffer::Framebuffer(float sizeX,float sizeY) : m_Size(sizeX,sizeY){
         }));
 
 
-        SIE_GL_CALL(glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, m_AttachedTexture.get()->GetID(), 0));
+        SIE_GL_CALL(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D, m_AttachedTexture.get()->GetID(), 0));
         
         
         if(!m_RenderBufferID){
